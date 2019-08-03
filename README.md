@@ -1,1 +1,1 @@
-ktane-blockStacks
+#[ModKit Wiki](../../wiki)
