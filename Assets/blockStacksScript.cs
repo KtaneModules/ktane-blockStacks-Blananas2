@@ -77,7 +77,6 @@ public class blockStacksScript : MonoBehaviour {
     void OnNeedyDeactivation ()
     {
         moduleSolved = true;
-        topScreenText.text = "_";
         stackHeights.Clear();
         answerStacks.Clear();
         stackCheck = "";
@@ -85,8 +84,9 @@ public class blockStacksScript : MonoBehaviour {
 
     void OnTimerExpired()
     {
+        needyModule.HandleStrike();
         moduleSolved = true;
-        topScreenText.text = "_";
+        topScreenText.text = "Time";
         stackHeights.Clear();
         answerStacks.Clear();
         stackCheck = "";
@@ -100,32 +100,32 @@ public class blockStacksScript : MonoBehaviour {
             if (stack == stacks[0])
             {
                 answerStacks.Add(stackHeights[0]);
-                stackCheck += "A";
+                stackCheck += "1";
             }
             else if (stack == stacks[1])
             {
                 answerStacks.Add(stackHeights[1]);
-                stackCheck += "B";
+                stackCheck += "2";
             }
             else if (stack == stacks[2])
             {
                 answerStacks.Add(stackHeights[2]);
-                stackCheck += "C";
+                stackCheck += "3";
             }
             else if (stack == stacks[3])
             {
                 answerStacks.Add(stackHeights[3]);
-                stackCheck += "D";
+                stackCheck += "4";
             }
             else if (stack == stacks[4])
             {
                 answerStacks.Add(stackHeights[4]);
-                stackCheck += "E";
+                stackCheck += "5";
             }
             else if (stack == stacks[5])
             {
                 answerStacks.Add(stackHeights[5]);
-                stackCheck += "F";
+                stackCheck += "6";
             }
             else
             {
@@ -135,17 +135,18 @@ public class blockStacksScript : MonoBehaviour {
 
         if (stackCheck.Length == 6)
         {
-            if ((stackCheck.Contains("A") && stackCheck.Contains("B") && stackCheck.Contains("C") && stackCheck.Contains("D") && stackCheck.Contains("E") && stackCheck.Contains("F")) && (answerStacks[0] + answerStacks[1] == mainNumber && answerStacks[2] + answerStacks[3] == mainNumber && answerStacks[4] + answerStacks[5] == mainNumber))
+            if ((stackCheck.Contains("1") && stackCheck.Contains("2") && stackCheck.Contains("3") && stackCheck.Contains("4") && stackCheck.Contains("5") && stackCheck.Contains("6")) && (answerStacks[0] + answerStacks[1] == mainNumber && answerStacks[2] + answerStacks[3] == mainNumber && answerStacks[4] + answerStacks[5] == mainNumber))
             {
-                Debug.LogFormat("[Block Stacks #{0}] You selected stacks correctly, instance solved. ({1})", moduleId, stackCheck);
+                Debug.LogFormat("[Block Stacks #{0}] You selected stacks correctly, instance solved. (Order: {1})", moduleId, stackCheck);
+                topScreenText.text = ":)";
             }
             else
             {
-                Debug.LogFormat("[Block Stacks #{0}] You selected stacks incorrectly, instance striked. ({1})", moduleId, stackCheck);
+                Debug.LogFormat("[Block Stacks #{0}] You selected stacks incorrectly, instance striked. (Order: {1})", moduleId, stackCheck);
                 needyModule.HandleStrike();
+                topScreenText.text = "X";
             }
             needyModule.HandlePass();
-            topScreenText.text = "_";
             stackHeights.Clear();
             answerStacks.Clear();
             stackCheck = "";
