@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using KModkit;
 
@@ -154,4 +155,66 @@ public class blockStacksScript : MonoBehaviour {
 
 	}
 
+    //twitch plays
+    private bool isInputVal(string s)
+    {
+        string[] valids = { "1", "2", "3", "4", "5", "6" };
+        string[] numbs = s.Split(';',',');
+        for(int i = 0; i < numbs.Length; i++)
+        {
+            if (!valids.Contains(numbs[i]))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    #pragma warning disable 414
+    private readonly string TwitchHelpMessage = @"!{0} blocks 1;4;5;2 [Selects the block pairs '1 and 4' and '5 and 2' with 1-6 being the block's positions on the module from left to right]";
+    #pragma warning restore 414
+    IEnumerator ProcessTwitchCommand(string command)
+    {
+        string[] parameters = command.Split(' ');
+        if (Regex.IsMatch(parameters[0], @"^\s*blocks\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+            if(parameters.Length == 2)
+            {
+                if (isInputVal(parameters[1]))
+                {
+                    yield return null;
+                    string[] numbs = parameters[1].Split(';', ',');
+                    for (int i = 0; i < numbs.Length; i++)
+                    {
+                        if (numbs[i].Equals("1"))
+                        {
+                            stacks[0].OnInteract();
+                        }
+                        else if (numbs[i].Equals("2"))
+                        {
+                            stacks[1].OnInteract();
+                        }
+                        else if (numbs[i].Equals("3"))
+                        {
+                            stacks[2].OnInteract();
+                        }
+                        else if (numbs[i].Equals("4"))
+                        {
+                            stacks[3].OnInteract();
+                        }
+                        else if (numbs[i].Equals("5"))
+                        {
+                            stacks[4].OnInteract();
+                        }
+                        else if (numbs[i].Equals("6"))
+                        {
+                            stacks[5].OnInteract();
+                        }
+                        yield return new WaitForSeconds(0.1f);
+                    }
+                    yield break;
+                }
+            }
+        }
+    }
 }
