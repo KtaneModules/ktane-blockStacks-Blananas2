@@ -171,50 +171,49 @@ public class blockStacksScript : MonoBehaviour {
     }
 
     #pragma warning disable 414
-    private readonly string TwitchHelpMessage = @"!{0} blocks 1;4;5;2 [Selects the block pairs '1 and 4' and '5 and 2' with 1-6 being the block's positions on the module from left to right]";
+    private readonly string TwitchHelpMessage = @"!{0} 1;4;5;2 [Selects the block pairs '1 and 4' and '5 and 2' with 1-6 being the block's positions on the module from left to right]";
     #pragma warning restore 414
     IEnumerator ProcessTwitchCommand(string command)
     {
         string[] parameters = command.Split(' ');
-        if (Regex.IsMatch(parameters[0], @"^\s*blocks\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        string fixedparam = "";
+        for (int i = 0; i < parameters.Length; i++)
         {
-            if(parameters.Length == 2)
+            fixedparam += parameters[i];
+        }
+        if (isInputVal(fixedparam))
+        {
+            yield return null;
+            string[] numbs = fixedparam.Split(';', ',');
+            for (int i = 0; i < numbs.Length; i++)
             {
-                if (isInputVal(parameters[1]))
+                if (numbs[i].Equals("1"))
                 {
-                    yield return null;
-                    string[] numbs = parameters[1].Split(';', ',');
-                    for (int i = 0; i < numbs.Length; i++)
-                    {
-                        if (numbs[i].Equals("1"))
-                        {
-                            stacks[0].OnInteract();
-                        }
-                        else if (numbs[i].Equals("2"))
-                        {
-                            stacks[1].OnInteract();
-                        }
-                        else if (numbs[i].Equals("3"))
-                        {
-                            stacks[2].OnInteract();
-                        }
-                        else if (numbs[i].Equals("4"))
-                        {
-                            stacks[3].OnInteract();
-                        }
-                        else if (numbs[i].Equals("5"))
-                        {
-                            stacks[4].OnInteract();
-                        }
-                        else if (numbs[i].Equals("6"))
-                        {
-                            stacks[5].OnInteract();
-                        }
-                        yield return new WaitForSeconds(0.1f);
-                    }
-                    yield break;
+                    stacks[0].OnInteract();
                 }
+                else if (numbs[i].Equals("2"))
+                {
+                    stacks[1].OnInteract();
+                }
+                else if (numbs[i].Equals("3"))
+                {
+                    stacks[2].OnInteract();
+                }
+                else if (numbs[i].Equals("4"))
+                {
+                    stacks[3].OnInteract();
+                }
+                else if (numbs[i].Equals("5"))
+                {
+                    stacks[4].OnInteract();
+                }
+                else if (numbs[i].Equals("6"))
+                {
+                    stacks[5].OnInteract();
+                }
+                yield return new WaitForSeconds(0.1f);
             }
+            yield break;
         }
     }
 }
