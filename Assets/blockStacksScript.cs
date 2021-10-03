@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using UnityEngine;
-using KModkit;
 
 public class blockStacksScript : MonoBehaviour {
 
@@ -51,15 +48,15 @@ public class blockStacksScript : MonoBehaviour {
     void OnNeedyActivation()
     {
         moduleSolved = false;
-        mainNumber = UnityEngine.Random.Range(4, 8);
+        mainNumber = Random.Range(4, 8);
         topScreenText.text = mainNumber.ToString();
-        randomNumber1 = UnityEngine.Random.Range(1, mainNumber);
+        randomNumber1 = Random.Range(1, mainNumber);
         stackHeights.Add(randomNumber1);
         stackHeights.Add(mainNumber - randomNumber1);
-        randomNumber2 = UnityEngine.Random.Range(1, mainNumber);
+        randomNumber2 = Random.Range(1, mainNumber);
         stackHeights.Add(randomNumber2);
         stackHeights.Add(mainNumber - randomNumber2);
-        randomNumber3 = UnityEngine.Random.Range(1, mainNumber);
+        randomNumber3 = Random.Range(1, mainNumber);
         stackHeights.Add(randomNumber3);
         stackHeights.Add(mainNumber - randomNumber3);
         stackHeights.Shuffle();
@@ -92,10 +89,10 @@ public class blockStacksScript : MonoBehaviour {
         answerStacks.Clear();
         stackCheck = "";
     }
-	
-	void StackPress (KMSelectable stack){
+
+    void StackPress (KMSelectable stack){
         stack.AddInteractionPunch();
-        GetComponent<KMAudio>().PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, transform);
+        Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, stack.transform);
         if (moduleSolved == false)
         {
             if (stack == stacks[0])
@@ -184,6 +181,11 @@ public class blockStacksScript : MonoBehaviour {
         if (isInputVal(fixedparam))
         {
             yield return null;
+            if (moduleSolved)
+            {
+                yield return "sendtochaterror You can't interact with the module right now.";
+                yield break;
+            }
             string[] numbs = fixedparam.Split(';', ',');
             for (int i = 0; i < numbs.Length; i++)
             {
@@ -214,6 +216,56 @@ public class blockStacksScript : MonoBehaviour {
                 yield return new WaitForSeconds(0.1f);
             }
             yield break;
+        }
+    }
+
+    void TwitchHandleForcedSolve()
+    {
+        //The code is done in a coroutine instead of here so that if the solvebomb command was executed this will just input the number right when it activates and it wont wait for its turn in the queue
+        StartCoroutine(DealWithNeedy());
+    }
+
+    private IEnumerator DealWithNeedy()
+    {
+        if (!moduleSolved)
+        {
+            List<char> dupes = new List<char>();
+            for (int i = 0; i < stackCheck.Length; i++)
+            {
+                if (dupes.Contains(stackCheck[i]) || ((i % 2 == 1) && (stackHeights[int.Parse(stackCheck[i - 1].ToString()) - 1] + stackHeights[int.Parse(stackCheck[i].ToString()) - 1] != mainNumber)))
+                {
+                    OnNeedyDeactivation();
+                    needyModule.HandlePass();
+                    topScreenText.text = ":)";
+                    break;
+                }
+                else
+                    dupes.Add(stackCheck[i]);
+            }
+        }
+        while (true)
+        {
+            while (moduleSolved) { yield return null; }
+            List<int> used = new List<int>();
+            for (int i = 0; i < stackCheck.Length; i++)
+                used.Add(int.Parse(stackCheck[i].ToString()) - 1);
+            int start = stackCheck.Length / 2;
+            for (int i = start; i < 3; i++)
+            {
+                if (stackCheck.Length % 2 == 0)
+                {
+                    int rando = Random.Range(0, 6);
+                    while (used.Contains(rando)) rando = Random.Range(0, 6);
+                    used.Add(rando);
+                    stacks[rando].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                }
+                int rando2 = Random.Range(0, 6);
+                while (used.Contains(rando2) || (stackHeights[int.Parse(stackCheck[stackCheck.Length - 1].ToString()) - 1] + stackHeights[rando2]) != mainNumber) rando2 = Random.Range(0, 6);
+                used.Add(rando2);
+                stacks[rando2].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
         }
     }
 }
