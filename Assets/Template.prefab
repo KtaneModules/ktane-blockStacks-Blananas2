@@ -79,7 +79,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1095447608202718
 GameObject:
   m_ObjectHideFlags: 1
@@ -1959,7 +1959,7 @@ MonoBehaviour:
   - {fileID: 114679467782632138}
   - {fileID: 114954802307385782}
   IsPassThrough: 0
-  ChildRowLength: 0
+  ChildRowLength: 6
   Highlight: {fileID: 114570430299588062}
   SelectableColliders: []
   DefaultSelectableIndex: 0
