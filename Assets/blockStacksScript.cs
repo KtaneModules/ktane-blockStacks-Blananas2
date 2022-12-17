@@ -145,9 +145,7 @@ public class blockStacksScript : MonoBehaviour {
                 topScreenText.text = "X";
             }
             needyModule.HandlePass();
-            stackHeights.Clear();
-            answerStacks.Clear();
-            stackCheck = "";
+            OnNeedyDeactivation();
         }
 
 	}

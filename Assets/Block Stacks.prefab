@@ -405,7 +405,7 @@ GameObject:
   - component: {fileID: 114344006290069406}
   - component: {fileID: 114770345606091492}
   m_Layer: 0
-  m_Name: Template
+  m_Name: Block Stacks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
